@@ -5,7 +5,7 @@ from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import LoginManager
-from flask_login import login_user, logout_user, current_user
+from flask_login import login_user, logout_user, current_user, login_required
 from flask_login import UserMixin
 
 # code for init
@@ -47,15 +47,18 @@ def load_user(user_id):
 @app.route('/')
 @app.route('/home')
 @app.route('/index')
+@login_required
 def index():
     #name = "Niloy"
 
-    context = {
-        'text': 'This is data by index',
-        'name': 'Bob'
-    }
+    # context = {
+    #     'text': 'This is data by index',
+    #     'name': 'Bob'
+    # }
 
-    return render_template('index.html', data=context)
+    name = current_user.username
+
+    return render_template('index.html', name=name)
 
 @app.route('/about')
 def about():
@@ -80,11 +83,16 @@ def login():
 
                     return redirect(url_for('index'))
 
-                flash("Invalid Credentials")
-
+                # flash("Invalid Credentials")
+        flash("Invalid Credentials")
     return render_template('login.html', form=form)
 
     
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
         
 
 

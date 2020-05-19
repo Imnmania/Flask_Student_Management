@@ -45,13 +45,15 @@
             <div class="collapse navbar-collapse" id="navbarToggle">
               <div class="navbar-nav mr-auto">
                 <a class="nav-item nav-link" href="{{ url_for('index') }}">Home</a>
-                <a class="nav-item nav-link" href="{{ url_for('about') }}">About</a>
                 <a class="nav-item nav-link" href="{{ url_for('contact') }}">Contact</a>
+                <a class="nav-item nav-link" href="{{ url_for('about') }}">About</a>
+                <!-- <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a> -->
               </div>
               <!-- Navbar Right Side -->
               <div class="navbar-nav">
                 <a href="{{ url_for('login') }}"><button class="btn btn-success btn-spacex navbar-btn"> Login </button></a>
                 <a href="{{ url_for('register') }}"><button class="btn btn-info btn-spacex navbar-btn"> Register </button></a>
+                <a href="{{ url_for('logout') }}"><button class="btn btn-danger btn-spacex navbar-btn"> Logout </button></a>
                 <!-- <a class="nav-item nav-link" href="">Login</a>
                 <a class="nav-item nav-link" href="">Register</a> -->
               </div>
