@@ -82,3 +82,22 @@ body {
   .btn-spacex {
     margin: 8px;
   }
+
+  .half-wide{
+    width: 50%;
+    margin: auto;
+    padding: 30px;
+    min-width: 500px
+  }
+
+  .lscreen-button{
+    padding: 10px 25px;
+  }
+
+  .lscreen-btn-tpad{
+    padding-top: 10px;
+  }
+
+  .lcenter {
+    text-align: center;
+  }

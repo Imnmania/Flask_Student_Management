@@ -4,7 +4,11 @@
 
 {% block body %} 
 
-    <h1> Login to Student RDS </h1>
+<div class="content-section half-wide">
+
+    <div class="lcenter p-2">
+        <h1> Admin Login </h1>
+    </div>
 
     <!-- flash message display -->
     {% with messages = get_flashed_messages() %}
@@ -28,33 +32,65 @@
     <form action="" method="post" novalidate>
         {{ form.csrf_token }}
 
-        <p>
-            {{ form.username.label }} <br>
-            {{ form.username(size=32) }} <br>
+        <fieldset class="form-group">
 
-            {% for error in form.username.errors %}
-                <span style="color:red">{{ error }}</span>
-            {% endfor %}
+            <p>
+                <!-- {{ form.username.label }} <br>
+                {{ form.username(size=32) }} <br>
 
-        </p>
+                {% for error in form.username.errors %}
+                    <span style="color:red">{{ error }}</span>
+                {% endfor %} -->
 
-        <p>
-            {{ form.password.label }} <br>
-            {{ form.password(size=32) }} <br>
+                <div class="form-group">
+                        {{ form.username.label(class="form-control-label") }}
+                        {% if form.username.errors %}
+                        {{ form.username(class="form-control form-control-lg is-invalid")}}
+                        <div class="invalid-feedback">
+                            {% for error in form.username.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.username(class="form-control form-control-lg")}}
+                    {% endif %}  
+                </div>
 
-            {% for error in form.password.errors %}
-                <span style="color: red">{{ error }}</span>
-            {% endfor %}
+            </p>
 
-        </p>
+            <p>
+                <!-- {{ form.password.label }} <br>
+                {{ form.password(size=32) }} <br>
 
-        <p>
-            <!-- {{ form.submit() }} -->
-            <input type="submit" value="Login" class="btn btn-info">
+                {% for error in form.password.errors %}
+                    <span style="color: red">{{ error }}</span>
+                {% endfor %} -->
 
-        </p>
+                <div class="form-group">
+                    {{ form.password.label(class="form-control-label") }}
+                    {% if form.password.errors %}
+                        {{ form.password(class="form-control form-control-lg is-invalid")}}
+                        <div class="invalid-feedback">
+                            {% for error in form.password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.password(class="form-control form-control-lg")}}
+                    {% endif %}  
+                </div>
+
+            </p>
+
+            <p>
+                <div class="form-group lscreen-btn-tpad">
+                <!-- {{ form.submit() }} -->
+                <input type="submit" value="Login" class="btn btn-outline-dark lscreen-button">
+                </div>
+            </p>
+        </fieldset>
 
     </form>
     <!-- login form end -->
-
+</div>
 {% endblock %}

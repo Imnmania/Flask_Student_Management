@@ -83,8 +83,8 @@ def login():
 
                     return redirect(url_for('index'))
 
-                # flash("Invalid Credentials")
-        flash("Invalid Credentials")
+                # flash("Invalid Credentials, Please Try Again!")
+        flash("Invalid Credentials, Please Try Again!")
     return render_template('login.html', form=form)
 
     
@@ -113,7 +113,7 @@ def register():
         db.session.add(new_register)
         db.session.commit()
 
-        flash("Registration Success!")
+        flash("Registration Successful!")
 
         return redirect(url_for('login'))
 
