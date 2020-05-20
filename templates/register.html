@@ -4,6 +4,7 @@
 
 {% block body %} 
 
+{% if data == 'Admin' %}
 <div class="content-section half-wide">
 
     <div class="lcenter p-2">
@@ -93,4 +94,8 @@
     </form>
     <!-- login form end -->
 </div>
+{% else %}
+    <h1> invalid request </h1>
+{% endif %}
+
 {% endblock %}

@@ -51,10 +51,14 @@
               </div>
               <!-- Navbar Right Side -->
               <div class="navbar-nav">
-                <a href="{{ url_for('login') }}"><button class="btn btn-success btn-spacex navbar-btn"> Login </button></a>
-                <a href="{{ url_for('register') }}"><button class="btn btn-info btn-spacex navbar-btn"> Register </button></a>
-                <a href="{{ url_for('logout') }}"><button class="btn btn-danger btn-spacex navbar-btn"> Logout </button></a>
-                <!-- <a class="nav-item nav-link" href="">Login</a>
+                {% if data == 'Admin' %}
+                  <a href="{{ url_for('login') }}"><button class="btn btn-success btn-spacex navbar-btn"> Login </button></a>
+                  <a href="{{ url_for('register') }}"><button class="btn btn-info btn-spacex navbar-btn"> Register </button></a>
+                  <a href="{{ url_for('logout') }}"><button class="btn btn-danger btn-spacex navbar-btn"> Logout </button></a>
+                {% else %}
+                  <a href="{{ url_for('logout') }}"><button class="btn btn-danger btn-spacex navbar-btn"> Logout </button></a>
+                {% endif %}
+                  <!-- <a class="nav-item nav-link" href="">Login</a>
                 <a class="nav-item nav-link" href="">Register</a> -->
               </div>
             </div>

@@ -1,4 +1,4 @@
-from flask import Flask, make_response, request, render_template, url_for, redirect, flash
+from flask import Flask, make_response, request, render_template, url_for, redirect, flash, render_template_string
 from form import LoginForm, RegisterForm
 from flask_sqlalchemy import SQLAlchemy
 from flask_script import Manager
@@ -19,8 +19,6 @@ db = SQLAlchemy(app)
 
 migrate = Migrate(app, db)
 
-#manager = Manager(app)
-#manager.add_command('db', MigrateCommand)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -32,16 +30,36 @@ class UserInfo(UserMixin, db.Model):
     username = db.Column(db.String(100), unique = True)
     password = db.Column(db.String(100))
     email = db.Column(db.String(100))
+    roles = db.Column(db.String(50), default = 'Student')
 
+    
+    #manager = Manager(app)
+    #manager.add_command('db', MigrateCommand)
 
-    def __init__(self, username, password, email):
-        self.username = username
-        self.password = password
-        self.email = email
+    # def __init__(self, username, password, email):
+    #     self.username = username
+    #     self.password = password
+    #     self.email = email
 
 @login_manager.user_loader
 def load_user(user_id):
     return UserInfo.query.get(int(user_id))
+
+# Define the Role data-model
+class Role(db.Model):
+    __tablename__ = 'roles'
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(50), unique=True)
+
+# Define the UserRoles association table
+class UserRoles(db.Model):
+    __tablename__ = 'user_roles'
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey('user_info.id', ondelete='CASCADE'))
+    role_id = db.Column(db.Integer(), db.ForeignKey('roles.id', ondelete='CASCADE'))
+
+# Setup Flask-User and specify the User data-model
+# user_manager = UserManager(app, db, UserInfo)
 
 # code for views
 @app.route('/')
@@ -57,16 +75,30 @@ def index():
     # }
 
     name = current_user.username
+    data = current_user.roles
+    return render_template('index.html', name=name, data=data)
 
-    return render_template('index.html', name=name)
+@app.route('/base0')
+def base0():
+    data = current_user.roles
+    return data
 
 @app.route('/about')
+@login_required
 def about():
-    return render_template('about.html')
+    data = current_user.roles
+    return render_template('about.html', data=data)
 
 @app.route('/contact')
+@login_required
 def contact():
-    return render_template('contact.html')
+    data = current_user.roles
+    return render_template('contact.html', data=data)
+
+def roleControl():
+    # form = LoginForm()
+    # user = UserInfo.query.filter_by(username = form.username.data).first()
+    return current_user.roles
 
 
 @app.route('/login', methods = ['GET', 'POST'])
@@ -80,6 +112,8 @@ def login():
             if user:
                 if check_password_hash(user.password, form.password.data):
                     login_user(user)
+                    #role = user.roles
+                    #return (roleControl())
 
                     return redirect(url_for('index'))
 
@@ -97,8 +131,10 @@ def logout():
 
 
 @app.route('/register', methods = ['GET', 'POST'])
+@login_required
 def register():
     form = RegisterForm()
+    data = roleControl()
 
     if request.method == 'POST':
         if form.validate_on_submit():
@@ -141,7 +177,7 @@ def register():
 
     #     return redirect(url_for('login'))
 
-    return render_template('register.html', form=form)
+    return render_template('register.html', form=form, data=data)
 
 
 
