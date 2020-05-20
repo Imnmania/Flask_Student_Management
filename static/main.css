@@ -101,3 +101,19 @@ body {
   .lcenter {
     text-align: center;
   }
+
+  .navpad {
+    padding-top: 7px;
+    padding-bottom: 7px;
+  }
+
+  .phcenter {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 70%;
+  }
+
+  .top-pad {
+    padding-top: 100px;
+  }

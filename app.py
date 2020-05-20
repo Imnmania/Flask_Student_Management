@@ -78,10 +78,6 @@ def index():
     data = current_user.roles
     return render_template('index.html', name=name, data=data)
 
-@app.route('/base0')
-def base0():
-    data = current_user.roles
-    return data
 
 @app.route('/about')
 @login_required
@@ -95,12 +91,9 @@ def contact():
     data = current_user.roles
     return render_template('contact.html', data=data)
 
-def roleControl():
-    # form = LoginForm()
-    # user = UserInfo.query.filter_by(username = form.username.data).first()
-    return current_user.roles
 
 
+## Login Function
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -122,6 +115,7 @@ def login():
     return render_template('login.html', form=form)
 
     
+## Logout Function    
 @app.route('/logout')
 @login_required
 def logout():
@@ -129,7 +123,7 @@ def logout():
     return redirect(url_for('login'))
         
 
-
+## Register Function
 @app.route('/register', methods = ['GET', 'POST'])
 @login_required
 def register():
@@ -180,7 +174,7 @@ def register():
     return render_template('register.html', form=form, data=data)
 
 
-
+# # Cookie Management
 # @app.route('/user/<name>')
 # def user(name):
 #     return "<h1> Welcome Mr. {} </h1>".format(name)
@@ -205,6 +199,20 @@ def page_not_found(e):
 def internal_server_error(e):
     return render_template('500.html')
 
+@app.route('/base0')
+def base0():
+    data = current_user.roles
+    return data
+
+@app.route('/base1')
+def base1():
+    data = current_user.roles
+    return data
+
+def roleControl():
+    # form = LoginForm()
+    # user = UserInfo.query.filter_by(username = form.username.data).first()
+    return current_user.roles
 
 
 
