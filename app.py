@@ -100,22 +100,46 @@ def logout():
 def register():
     form = RegisterForm()
 
-    if form.validate_on_submit():
-        hashed_password = generate_password_hash(form.password.data, method='sha256')
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            user = UserInfo.query.filter_by(username = form.username.data).first()
 
-        username = form.username.data
-        # password = form.password.data
-        password = hashed_password
-        email = form.email.data
+            if user:
+                flash("Username is already taken, Try another one!")
+            else:
 
-        new_register = UserInfo(username=username, password=password, email=email )
+                hashed_password = generate_password_hash(form.password.data, method='sha256')
 
-        db.session.add(new_register)
-        db.session.commit()
+                username = form.username.data
+                # password = form.password.data
+                password = hashed_password
+                email = form.email.data
 
-        flash("Registration Successful!")
+                new_register = UserInfo(username=username, password=password, email=email )
 
-        return redirect(url_for('login'))
+                db.session.add(new_register)
+                db.session.commit()
+
+                flash("Registration Successful!")
+
+                return redirect(url_for('login'))
+
+    # if form.validate_on_submit():
+    #     hashed_password = generate_password_hash(form.password.data, method='sha256')
+
+    #     username = form.username.data
+    #     # password = form.password.data
+    #     password = hashed_password
+    #     email = form.email.data
+
+    #     new_register = UserInfo(username=username, password=password, email=email )
+
+    #     db.session.add(new_register)
+    #     db.session.commit()
+
+    #     flash("Registration Successful!")
+
+    #     return redirect(url_for('login'))
 
     return render_template('register.html', form=form)
 
