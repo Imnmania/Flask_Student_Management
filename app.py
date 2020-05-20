@@ -107,6 +107,7 @@ def login():
                     login_user(user)
                     #role = user.roles
                     #return (roleControl())
+                    # session = user.username
 
                     return redirect(url_for('index'))
 
