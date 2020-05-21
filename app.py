@@ -147,15 +147,24 @@ def contact():
 @login_required
 def student_portal():
     data = current_user.roles
-    all_students = Student.query.all()
-    return render_template('student_portal.html', data=data, all_students=all_students)
+
+    if data == 'Admin':
+        all_students = Student.query.all()
+        return render_template('student_portal.html', data=data, all_students=all_students)
+    else:
+        return render_template('404.html')
+
 
 @app.route('/faculty_portal', methods = ['GET', 'POST'])
 @login_required
 def faculty_portal():
     data = current_user.roles
-    all_faculties = Faculty.query.all()
-    return render_template('faculty_portal.html', data=data, all_faculties=all_faculties)
+    
+    if data == 'Admin':
+        all_faculties = Faculty.query.all()
+        return render_template('faculty_portal.html', data=data, all_faculties=all_faculties)
+    else:
+        return render_template('404.html')
 
 ## Code Views End
 
@@ -232,28 +241,33 @@ def register():
 def st_insert():
     if request.method == 'POST':
 
-        student_name = request.form['student_name']
-        email = request.form['email']
-        phone = request.form['phone']
-        status = request.form['status']
-        cgpa = request.form['cgpa']
-        dept_id = request.form['dept_id']
-        major = request.form['major']
-        date_of_birth = request.form['date_of_birth']
-        father_name = request.form['father_name']
-        mother_name = request.form['mother_name']
-        address = request.form['address']
-        credit_passed = request.form['credit_passed']
-        password = request.form['password']
+        try:
+            student_name = request.form['student_name']
+            email = request.form['email']
+            phone = request.form['phone']
+            status = request.form['status']
+            cgpa = request.form['cgpa']
+            dept_id = request.form['dept_id']
+            major = request.form['major']
+            date_of_birth = request.form['date_of_birth']
+            father_name = request.form['father_name']
+            mother_name = request.form['mother_name']
+            address = request.form['address']
+            credit_passed = request.form['credit_passed']
+            password = request.form['password']
 
-        my_data = Student(student_name=student_name, email=email, phone=phone, status=status, cgpa=cgpa, dept_id=dept_id, major=major, date_of_birth=date_of_birth, father_name=father_name,
-        mother_name=mother_name, address=address, credit_passed=credit_passed, password=password )
+            my_data = Student(student_name=student_name, email=email, phone=phone, status=status, cgpa=cgpa, dept_id=dept_id, major=major, date_of_birth=date_of_birth, father_name=father_name,
+            mother_name=mother_name, address=address, credit_passed=credit_passed, password=password )
 
 
-        db.session.add(my_data)
-        db.session.commit()
+            db.session.add(my_data)
+            db.session.commit()
 
-        flash("New Student Added!")
+            flash("New Student Added!")
+
+        except Exception:
+            flash("That Student Already Exists!!!")
+
 
         return redirect(url_for('student_portal'))
 
@@ -302,28 +316,34 @@ def st_delete(id):
 def fc_insert():
     if request.method == 'POST':
 
-        faculty_name = request.form['faculty_name']
-        email = request.form['email']
-        faculty_init = request.form['faculty_init']
-        phone = request.form['phone']
-        dept_id = request.form['dept_id']
-        status = request.form['status']
-        qualification = request.form['qualification']
-        guardian_name = request.form['guardian_name']
-        marital_status = request.form['marital_status']
-        salary = request.form['salary']
-        password = request.form['password']
+        try:
+
+            faculty_name = request.form['faculty_name']
+            email = request.form['email']
+            faculty_init = request.form['faculty_init']
+            phone = request.form['phone']
+            dept_id = request.form['dept_id']
+            status = request.form['status']
+            qualification = request.form['qualification']
+            guardian_name = request.form['guardian_name']
+            marital_status = request.form['marital_status']
+            salary = request.form['salary']
+            password = request.form['password']
+            
+
+            my_data = Faculty(faculty_name=faculty_name, email=email, faculty_init=faculty_init, phone=phone,
+            dept_id=dept_id, status=status, qualification=qualification, guardian_name=guardian_name, marital_status=marital_status,
+            salary=salary, password=password)
+
+
+            db.session.add(my_data)
+            db.session.commit()
+
+            flash("New Faculty Added!")
+
+        except Exception:
+            flash("Faculty Already Exists!!!")
         
-
-        my_data = Faculty(faculty_name=faculty_name, email=email, faculty_init=faculty_init, phone=phone,
-        dept_id=dept_id, status=status, qualification=qualification, guardian_name=guardian_name, marital_status=marital_status,
-        salary=salary, password=password)
-
-
-        db.session.add(my_data)
-        db.session.commit()
-
-        flash("New Faculty Added!")
 
         return redirect(url_for('faculty_portal'))
 
