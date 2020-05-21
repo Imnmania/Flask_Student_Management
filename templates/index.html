@@ -4,7 +4,33 @@
 
 {% block body %} 
 
-    <h2> Welcome {{ name|capitalize }}</h2>
-   
+    <!-- <h2> Welcome {{ name|capitalize }} </h2> -->
+    
+    <div class="container phcenter-n top-pad">
+        <div class="row">
+            <!-- <div class="col-sm" style="padding-left: 75px;"> -->
+            <div class="d-flex justify-content-center"">
 
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="static/prof.png" alt="Card image cap">
+                    <div class="card-body">
+                    <p class="card-text lcenter">I'M SO HANDSOME ...... YAY</p>
+                    </div>
+                </div>
+                
+            </div>
+
+            <div class="d-flex justify-content-center top-pad" >
+                <div class="container" style="padding-left: 40px;">
+                    <h2>Name: {{ name.username|capitalize }}</h2>
+                    <h2>ID: {{ name.id }}</h2>
+                    <h2>Occupation: {{ name.roles }}</h2>
+                    <h2>Email: {{ name.email }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    
 {% endblock %}

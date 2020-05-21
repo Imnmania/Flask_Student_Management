@@ -25,6 +25,8 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 # code for models
+
+## UserInfo Table
 class UserInfo(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key = True)
     username = db.Column(db.String(100), unique = True)
@@ -40,6 +42,55 @@ class UserInfo(UserMixin, db.Model):
     #     self.username = username
     #     self.password = password
     #     self.email = email
+
+
+## Admin Table
+class AdminInfo(db.Model):
+    __tablename__ = 'admin'
+    id = db.Column(db.Integer, primary_key = True)
+    admin_name = db.Column(db.String(100), unique = True)
+    password = db.Column(db.String(100))
+    email = db.Column(db.String(100))
+    roles = db.Column(db.String(50), default = 'Admin')
+
+
+## Student Table
+class Student(UserMixin, db.Model):
+    #__tablename__ = 'student'
+    id = db.Column(db.Integer, primary_key = True)
+    student_name = db.Column(db.String(100), unique = True)
+    email = db.Column(db.String(100))
+    phone = db.Column(db.Integer)
+    status = db.Column(db.String(100))
+    cgpa = db.Column(db.String(100))
+    dept_id = db.Column(db.Integer)
+    major = db.Column(db.String(100))
+    date_of_birth = db.Column(db.String(100))
+    father_name = db.Column(db.String(100))
+    mother_name = db.Column(db.String(100))
+    address = db.Column(db.String(100))
+    credit_passed = db.Column(db.Integer)
+    password = db.Column(db.String(100))
+    roles = db.Column(db.String(50), default = 'Student')
+
+
+## Faculty Table
+class Faculty(UserMixin, db.Model):
+    #__tablename__ = 'faculty'
+    id = db.Column(db.Integer, primary_key = True)
+    faculty_name = db.Column(db.String(100), unique = True)
+    email = db.Column(db.String(100))
+    faculty_init = db.Column(db.String(100))
+    phone = db.Column(db.Integer)
+    dept_id = db.Column(db.Integer)
+    status = db.Column(db.String(100))
+    qualification = db.Column(db.String(100))
+    guardian_name = db.Column(db.String(100))
+    marital_status = db.Column(db.String(100))
+    salary = db.Column(db.String(100))
+    password = db.Column(db.String(100))
+    roles = db.Column(db.String(50), default = 'Faculty')
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -61,7 +112,7 @@ class UserRoles(db.Model):
 # Setup Flask-User and specify the User data-model
 # user_manager = UserManager(app, db, UserInfo)
 
-# code for views
+## code for views
 @app.route('/')
 @app.route('/home')
 @app.route('/index')
@@ -74,7 +125,8 @@ def index():
     #     'name': 'Bob'
     # }
 
-    name = current_user.username
+    # name = current_user.username
+    name = current_user
     data = current_user.roles
     return render_template('index.html', name=name, data=data)
 
@@ -91,6 +143,22 @@ def contact():
     data = current_user.roles
     return render_template('contact.html', data=data)
 
+@app.route('/student_portal', methods = ['GET', 'POST'])
+@login_required
+def student_portal():
+    data = current_user.roles
+    all_students = Student.query.all()
+    return render_template('student_portal.html', data=data, all_students=all_students)
+
+@app.route('/faculty_portal', methods = ['GET', 'POST'])
+@login_required
+def faculty_portal():
+    data = current_user.roles
+    all_faculties = Faculty.query.all()
+    return render_template('faculty_portal.html', data=data, all_faculties=all_faculties)
+
+## Code Views End
+
 
 
 ## Login Function
@@ -103,7 +171,8 @@ def login():
             user = UserInfo.query.filter_by(username = form.username.data).first()
 
             if user:
-                if check_password_hash(user.password, form.password.data):
+                # if check_password_hash(user.password, form.password.data):
+                if (user.password == form.password.data):  
                     login_user(user)
                     #role = user.roles
                     #return (roleControl())
@@ -124,7 +193,7 @@ def logout():
     return redirect(url_for('login'))
         
 
-## Register Function
+## Admin Register Function
 @app.route('/register', methods = ['GET', 'POST'])
 @login_required
 def register():
@@ -133,20 +202,20 @@ def register():
 
     if request.method == 'POST':
         if form.validate_on_submit():
-            user = UserInfo.query.filter_by(username = form.username.data).first()
+            user = AdminInfo.query.filter_by(admin_name = form.username.data).first()
 
             if user:
                 flash("Username is already taken, Try another one!")
             else:
 
-                hashed_password = generate_password_hash(form.password.data, method='sha256')
+                # hashed_password = generate_password_hash(form.password.data, method='sha256')
 
-                username = form.username.data
-                # password = form.password.data
-                password = hashed_password
+                admin_name = form.username.data
+                password = form.password.data
+                # password = hashed_password
                 email = form.email.data
 
-                new_register = UserInfo(username=username, password=password, email=email )
+                new_register = AdminInfo(admin_name=admin_name, password=password, email=email )
 
                 db.session.add(new_register)
                 db.session.commit()
@@ -155,24 +224,144 @@ def register():
 
                 return redirect(url_for('login'))
 
-    # if form.validate_on_submit():
-    #     hashed_password = generate_password_hash(form.password.data, method='sha256')
-
-    #     username = form.username.data
-    #     # password = form.password.data
-    #     password = hashed_password
-    #     email = form.email.data
-
-    #     new_register = UserInfo(username=username, password=password, email=email )
-
-    #     db.session.add(new_register)
-    #     db.session.commit()
-
-    #     flash("Registration Successful!")
-
-    #     return redirect(url_for('login'))
-
     return render_template('register.html', form=form, data=data)
+
+
+## Student Register Function
+@app.route('/st_insert', methods=['GET','POST'])
+def st_insert():
+    if request.method == 'POST':
+
+        student_name = request.form['student_name']
+        email = request.form['email']
+        phone = request.form['phone']
+        status = request.form['status']
+        cgpa = request.form['cgpa']
+        dept_id = request.form['dept_id']
+        major = request.form['major']
+        date_of_birth = request.form['date_of_birth']
+        father_name = request.form['father_name']
+        mother_name = request.form['mother_name']
+        address = request.form['address']
+        credit_passed = request.form['credit_passed']
+        password = request.form['password']
+
+        my_data = Student(student_name=student_name, email=email, phone=phone, status=status, cgpa=cgpa, dept_id=dept_id, major=major, date_of_birth=date_of_birth, father_name=father_name,
+        mother_name=mother_name, address=address, credit_passed=credit_passed, password=password )
+
+
+        db.session.add(my_data)
+        db.session.commit()
+
+        flash("New Student Added!")
+
+        return redirect(url_for('student_portal'))
+
+
+## Student Update Function
+@app.route('/st_update', methods=['GET','POST'])
+def st_update():
+    if request.method == 'POST':
+        my_data = Student.query.get(request.form.get('id'))  # this is the hidden id created in index.html
+
+        my_data.student_name = request.form['student_name']
+        my_data.email = request.form['email']
+        my_data.phone = request.form['phone']
+        my_data.status = request.form['status']
+        my_data.cgpa = request.form['cgpa']
+        my_data.dept_id = request.form['dept_id']
+        my_data.major = request.form['major']
+        my_data.date_of_birth = request.form['date_of_birth']
+        my_data.father_name = request.form['father_name']
+        my_data.mother_name = request.form['mother_name']
+        my_data.address = request.form['address']
+        my_data.credit_passed = request.form['credit_passed']
+        my_data.password = request.form['password']
+
+
+        db.session.commit()
+        flash("Student List Updated!")
+
+        return redirect(url_for('student_portal'))
+
+
+## Student Delete Function
+@app.route('/st_delete/<id>', methods=['GET', 'POST'])
+def st_delete(id):
+    my_data = Student.query.get(id)
+    db.session.delete(my_data)
+    db.session.commit()
+    flash('Student Deleted Successfully!')
+
+    return redirect(url_for('student_portal'))
+
+
+
+## Faculty Register Function
+@app.route('/fc_insert', methods=['GET','POST'])
+def fc_insert():
+    if request.method == 'POST':
+
+        faculty_name = request.form['faculty_name']
+        email = request.form['email']
+        faculty_init = request.form['faculty_init']
+        phone = request.form['phone']
+        dept_id = request.form['dept_id']
+        status = request.form['status']
+        qualification = request.form['qualification']
+        guardian_name = request.form['guardian_name']
+        marital_status = request.form['marital_status']
+        salary = request.form['salary']
+        password = request.form['password']
+        
+
+        my_data = Faculty(faculty_name=faculty_name, email=email, faculty_init=faculty_init, phone=phone,
+        dept_id=dept_id, status=status, qualification=qualification, guardian_name=guardian_name, marital_status=marital_status,
+        salary=salary, password=password)
+
+
+        db.session.add(my_data)
+        db.session.commit()
+
+        flash("New Faculty Added!")
+
+        return redirect(url_for('faculty_portal'))
+
+
+## Faculty Update Function
+@app.route('/fc_update', methods=['GET','POST'])
+def fc_update():
+    if request.method == 'POST':
+        my_data = Faculty.query.get(request.form.get('id'))  # this is the hidden id created in index.html
+
+        my_data.faculty_name = request.form['faculty_name']
+        my_data.email = request.form['email']
+        my_data.faculty_init = request.form['faculty_init']
+        my_data.phone = request.form['phone']
+        my_data.dept_id = request.form['dept_id']
+        my_data.status = request.form['status']
+        my_data.qualification = request.form['qualification']
+        my_data.guardian_name = request.form['guardian_name']
+        my_data.marital_status = request.form['marital_status']
+        my_data.salary = request.form['salary']
+        my_data.password = request.form['password']
+
+
+        db.session.commit()
+        flash("Faculty List Updated!")
+
+        return redirect(url_for('faculty_portal'))
+
+
+## Faculty Delete Function
+@app.route('/fc_delete/<id>', methods=['GET', 'POST'])
+def fc_delete(id):
+    my_data = Faculty.query.get(id)
+    db.session.delete(my_data)
+    db.session.commit()
+    flash('Faculty Deleted Successfully!')
+
+    return redirect(url_for('faculty_portal'))
 
 
 # # Cookie Management
