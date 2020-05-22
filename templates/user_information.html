@@ -1,0 +1,67 @@
+{% extends 'base0.html' %}
+
+{% block title %} User Info {% endblock %}
+
+{% block body %} 
+
+
+<div class="container jumbotron p-3">
+    <div class="row">
+        <!-- <div class="col-sm" style="padding-left: 75px;"> -->
+        <div class="d-flex justify-content-center col-sm-6">
+            
+            
+            <img src="static/prof.png" alt="Card image cap" height="260px" width="240px">
+
+
+            <!-- <div class="card " style="width: 18rem;">
+                <img class="card-img-top" src="static/prof.png" alt="Card image cap">
+                <div class="card-body">
+                <p class="card-text lcenter">I'M SO HANDSOME ...... YAY</p>
+                </div>
+            </div> -->
+            
+        </div>
+
+        <div class="d-flex justify-content-center col-sm-6" >
+            
+            {% if data == 'Student' %}
+                
+                <!-- Student Data -->
+                <div class="container" style="padding-left: 40px;">
+                    <h5>ID: {{ all_data.id }} </h5>
+                    <h5>Name: {{ all_data.student_name }} </h5>
+                    <h5>Current CGPA: {{ all_data.cgpa }} </h5>
+                    <h5>Credit Passed: {{ all_data.credit_passed }} </h5>
+                    <h5>Email: {{ all_data.email }} </h5>
+                    <h5>Phone: {{ all_data.phone }} </h5>
+                    <h5>Status: {{ all_data.status }} </h5>
+                    <h5>Department ID: {{ all_data.dept_id }} </h5>
+                    <h5>Date of Birth: {{ all_data.date_of_birth }} </h5>
+                    <h5>Father's Name: {{ all_data.father_name }} </h5>
+                    <h5>Mother's Name: {{ all_data.mother_name }} </h5>
+                    <h5>Address: {{ all_data.address }} </h5>
+                </div>
+            {% elif data == 'Faculty' %}
+                <div class="container" style="padding-left: 40px;">
+                    <h5>ID: {{ all_data.id }} </h5>
+                    <h5>Name: {{ all_data.faculty_name }} </h5>
+                    <h5>Email: {{ all_data.email }} </h5>
+                    <h5>Faculty Initial: {{ all_data.faculty_init }} </h5>
+                    <h5>Phone: {{ all_data.phone }} </h5>
+                    <h5>Department ID: {{ all_data.dept_id }} </h5>
+                    <h5>Status: {{ all_data.status }} </h5>
+                    <h5>Qualification: {{ all_data.qualification }} </h5>
+                    <h5>Guardian Name (if any): {{ all_data.guardian_name }} </h5>
+                    <h5>Marital Status: {{ all_data.marital_status }} </h5>
+                    <h5>Salary: {{ all_data.salary }} </h5>
+                </div>
+            {% else %}
+                <!-- <h1>PAGE NOT FOUND !!!</h1> -->
+                <img src="/static/404_not_found.png" alt="Not 404_not_found" class="phcenter"> 
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

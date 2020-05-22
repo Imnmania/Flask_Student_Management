@@ -6,9 +6,8 @@
 
     <!-- <h2> Welcome {{ name|capitalize }} </h2> -->
     
-    <div class="container phcenter-n top-pad">
+    <!-- <div class="container top-pad">
         <div class="row">
-            <!-- <div class="col-sm" style="padding-left: 75px;"> -->
             <div class="d-flex justify-content-center"">
 
                 <div class="card" style="width: 18rem;">
@@ -29,8 +28,18 @@
                 </div>
             </div>
         </div>
+    </div> -->
+
+<div class="jumbotron p-3">
+    <div class="card" style="width: 18rem;">
+        <img class="card-img-top" src="static/prof.png" alt="Card image cap">
+        <div class="card-body">
+            <h6 class="font-weight-bold lcenter">Name: {{ name.username|capitalize }}</h6>
+            <h6 class="font-weight-bold lcenter">ID: {{ name.id }}</h6>
+            <h6 class="font-weight-bold lcenter">Position: {{ name.roles }}</h6>
+            <h6 class="font-weight-bold lcenter">Email: {{ name.email }}</h6>
+
+        </div>
     </div>
-
-
-    
+</div>
 {% endblock %}

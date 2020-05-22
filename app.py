@@ -177,7 +177,25 @@ def admin_portal():
     else:
         return render_template('404.html')
 
-## Code Views End
+
+@app.route('/user_information', methods = ['GET', 'POST'])
+@login_required
+def user_information():
+    data = current_user.roles
+    
+    if data == 'Student':
+        all_data = Student.query.get(current_user.id)
+        return render_template('user_information.html', data=data, all_data=all_data)
+    
+    elif data == 'Faculty':
+        all_data = Faculty.query.get(current_user.id)
+        return render_template('user_information.html', data=data, all_data=all_data)
+    
+    else:
+        return render_template('404.html')
+
+
+## Code for Views End
 
 
 
