@@ -45,8 +45,8 @@ class UserInfo(UserMixin, db.Model):
 
 
 ## Admin Table
-class AdminInfo(db.Model):
-    __tablename__ = 'admin'
+class Admin(UserMixin, db.Model):
+    #__tablename__ = 'admin'
     id = db.Column(db.Integer, primary_key = True)
     admin_name = db.Column(db.String(100), unique = True)
     password = db.Column(db.String(100))
@@ -166,6 +166,17 @@ def faculty_portal():
     else:
         return render_template('404.html')
 
+@app.route('/admin_portal', methods = ['GET', 'POST'])
+@login_required
+def admin_portal():
+    data = current_user.roles
+    
+    if data == 'Admin':
+        all_admins = Admin.query.all()
+        return render_template('admin_portal.html', data=data, all_admins=all_admins)
+    else:
+        return render_template('404.html')
+
 ## Code Views End
 
 
@@ -234,6 +245,57 @@ def register():
                 return redirect(url_for('login'))
 
     return render_template('register.html', form=form, data=data)
+
+## Admin Register Function (ver2)
+@app.route('/ad_insert', methods=['GET','POST'])
+def ad_insert():
+    if request.method == 'POST':
+
+        try:
+            admin_name = request.form['admin_name']
+            password = request.form['password']
+            email = request.form['email']
+
+            my_data = Admin(admin_name=admin_name, password=password, email=email)
+
+
+            db.session.add(my_data)
+            db.session.commit()
+
+            flash("New Admin Added!")
+
+        except Exception:
+            flash("That Admin Already Exists!!!")
+
+
+        return redirect(url_for('admin_portal'))
+
+## Admin Update Function
+@app.route('/ad_update', methods=['GET','POST'])
+def ad_update():
+    if request.method == 'POST':
+        my_data = Admin.query.get(request.form.get('id'))  # this is the hidden id created in index.html
+
+        my_data.admin_name = request.form['admin_name']
+        my_data.password = request.form['password']
+        my_data.email = request.form['email']
+
+
+        db.session.commit()
+        flash("Admin List Updated!")
+
+        return redirect(url_for('admin_portal'))
+
+
+## Admin Delete Function
+@app.route('/ad_delete/<id>', methods=['GET', 'POST'])
+def ad_delete(id):
+    my_data = Admin.query.get(id)
+    db.session.delete(my_data)
+    db.session.commit()
+    flash('Admin Deleted Successfully!')
+
+    return redirect(url_for('admin_portal'))
 
 
 ## Student Register Function

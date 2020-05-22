@@ -55,7 +55,7 @@
                 {% if data == 'Admin' %}
                 <a class="nav-item nav-link" href="{{ url_for('student_portal') }}">Student Portal</a>
                 <a class="nav-item nav-link" href="{{ url_for('faculty_portal') }}">Faculty Portal</a>
-                <a class="nav-item nav-link" href="#">Admin Portal</a>
+                <a class="nav-item nav-link" href="{{ url_for('admin_portal') }}">Admin Portal</a>
                 {% endif %}
 
                 {% if data == 'Faculty' %}
@@ -72,7 +72,7 @@
               <div class="navbar-nav">
                 {% if data == 'Admin' %}
                   <!-- <a href="{{ url_for('login') }}"><button class="btn btn-success btn-spacex navbar-btn"> Login </button></a> -->
-                  <a href="{{ url_for('register') }}"><button class="btn btn-info btn-spacex navbar-btn"> Register </button></a>
+                  <!-- <a href="{{ url_for('register') }}"><button class="btn btn-info btn-spacex navbar-btn"> Register </button></a> -->
                   <a href="{{ url_for('logout') }}"><button class="btn btn-danger btn-spacex navbar-btn"> Logout </button></a>
                 {% else %}
                   <a href="{{ url_for('logout') }}"><button class="btn btn-danger btn-spacex navbar-btn"> Logout </button></a>
