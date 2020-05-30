@@ -91,6 +91,13 @@ class Faculty(UserMixin, db.Model):
     password = db.Column(db.String(100))
     roles = db.Column(db.String(50), default = 'Faculty')
 
+## Course Table
+class Course(UserMixin, db.Model):
+    course_id = db.Column(db.String(100), primary_key = True)
+    course_name = db.Column(db.String(100))
+    credit_hr = db.Column(db.Integer)
+    dept_id = db.Column(db.Integer)
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -166,6 +173,7 @@ def faculty_portal():
     else:
         return render_template('404.html')
 
+
 @app.route('/admin_portal', methods = ['GET', 'POST'])
 @login_required
 def admin_portal():
@@ -174,6 +182,18 @@ def admin_portal():
     if data == 'Admin':
         all_admins = Admin.query.all()
         return render_template('admin_portal.html', data=data, all_admins=all_admins)
+    else:
+        return render_template('404.html')
+
+
+@app.route('/course_portal', methods = ['GET', 'POST'])
+@login_required
+def course_portal():
+    data = current_user.roles
+
+    if data == 'Admin':
+        all_courses = Course.query.all()
+        return render_template('course_portal.html', data=data, all_courses=all_courses)
     else:
         return render_template('404.html')
 
@@ -463,6 +483,60 @@ def fc_delete(id):
 
     return redirect(url_for('faculty_portal'))
 
+
+## Course Insert Function
+@app.route('/cor_insert', methods=['GET','POST'])
+def cor_insert():
+    if request.method == 'POST':
+
+        try:
+            course_id = request.form['course_id']
+            course_name = request.form['course_name']
+            credit_hr = request.form['credit_hr']
+            dept_id = request.form['dept_id']
+
+            my_data = Course(course_id=course_id, course_name=course_name, credit_hr=credit_hr, dept_id=dept_id)
+
+
+            db.session.add(my_data)
+            db.session.commit()
+
+            flash("New Course Added!")
+
+        except Exception:
+            flash("That Course Already Exists!!!")
+
+
+        return redirect(url_for('course_portal'))
+
+
+## Course Update Function
+@app.route('/cor_update', methods=['GET','POST'])
+def cor_update():
+    if request.method == 'POST':
+        my_data = Course.query.get(request.form.get('course_id'))  # this is the hidden id
+
+        my_data.course_id = request.form['course_id']
+        my_data.course_name = request.form['course_name']
+        my_data.credit_hr = request.form['credit_hr']
+        my_data.dept_id = request.form['dept_id']
+
+
+        db.session.commit()
+        flash("Course List Updated!")
+
+        return redirect(url_for('course_portal'))
+
+
+## Course Delete Function
+@app.route('/cor_delete/<course_id>', methods=['GET', 'POST'])
+def cor_delete(course_id):
+    my_data = Course.query.get(course_id)
+    db.session.delete(my_data)
+    db.session.commit()
+    flash('Course Deleted Successfully!')
+
+    return redirect(url_for('course_portal'))
 
 # # Cookie Management
 # @app.route('/user/<name>')
